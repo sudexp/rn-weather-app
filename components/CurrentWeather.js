@@ -1,0 +1,110 @@
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
+
+import Card from './Card';
+import CustomText from './CustomText';
+
+import colors from '../utils/colors';
+import { kelvinTtoCelsius, formatDate } from '../utils/helpers';
+
+const CurrentWeather = ({ item }) => {
+  return (
+    <Card style={styles.currentWeather}>
+      <View style={styles.currentWeatherBlock}>
+        <View>
+          {item.name && (
+            <CustomText style={styles.city}>{item.name}</CustomText>
+          )}
+          <CustomText style={styles.weatherProps}>Scattered clouds</CustomText>
+        </View>
+        <View style={styles.cloudTemp}>
+          <CustomText style={styles.weatherProps}>Image</CustomText>
+          {item.main && item.main.temp && (
+            <CustomText style={styles.temperature}>
+              {kelvinTtoCelsius(item.main.temp)} &deg;C
+            </CustomText>
+          )}
+        </View>
+      </View>
+      <View style={styles.currentWeatherBlock}>
+        <View style={styles.datePropsBlock}>
+          {item.dt && (
+            <CustomText style={styles.date}>
+              {formatDate(item.dt).date}
+            </CustomText>
+          )}
+          {item.dt && (
+            <CustomText style={styles.time}>
+              {formatDate(item.dt).time}
+            </CustomText>
+          )}
+        </View>
+        <View style={styles.weatherPropsBlock}>
+          {item.wind && item.wind.speed && (
+            <CustomText style={styles.weatherProps}>
+              Wind: {item.wind.speed} m/s
+            </CustomText>
+          )}
+          {item.main && item.main.humidity && (
+            <CustomText style={styles.weatherProps}>
+              Humidity: {item.main.humidity} %
+            </CustomText>
+          )}
+          {item.rain && item.rain['3h'] && (
+            <CustomText style={styles.weatherProps}>
+              Precipitation (3h): {item.rain['3h']} mm
+            </CustomText>
+          )}
+        </View>
+      </View>
+    </Card>
+  );
+};
+
+const styles = StyleSheet.create({
+  currentWeather: {
+    width: '100%',
+    backgroundColor: colors.backgroundSecondaryColor,
+  },
+  datePropsBlock: {
+    justifyContent: 'flex-end',
+  },
+  weatherPropsBlock: {
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+  },
+  currentWeatherBlock: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 20,
+  },
+  city: {
+    fontSize: 19,
+    color: colors.fontPrimaryColor,
+  },
+  cloudTemp: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  temperature: {
+    fontSize: 26,
+    marginLeft: 10,
+    color: colors.fontPrimaryColor,
+  },
+  weatherProps: {
+    fontSize: 13,
+    paddingBottom: 3,
+    color: colors.fontSecondaryColor,
+  },
+  date: {
+    fontSize: 15,
+    color: colors.fontPrimaryColor,
+    paddingBottom: 3,
+  },
+  time: {
+    fontSize: 15,
+    color: colors.fontSecondaryColor,
+  },
+});
+
+export default CurrentWeather;
