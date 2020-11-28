@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { View, SafeAreaView, ScrollView, Text, StyleSheet } from 'react-native';
 import { useFonts } from 'expo-font';
 import { AppLoading } from 'expo';
@@ -8,6 +8,7 @@ import Loading from './components/Loading';
 import CustomStatusBar from './components/CustomStatusBar';
 import Header from './components/Header';
 import CurrentWeather from './components/CurrentWeather';
+import ForecastWeather from './components/ForecastWeather';
 
 import { API_KEY } from './config/api_key';
 import cities from './utils/cities';
@@ -19,7 +20,7 @@ const App = () => {
     true
   );
   const [currentWeather, setCurrentWeather] = useState([]);
-  const [forecastWeather, setForecastWeather] = useState([]);
+  const [forecastWeather, setForecastWeather] = useState({});
   const [fontLoaded] = useFonts({
     ArialRegular: require('./assets/fonts/ArialRegular.ttf'),
   });
@@ -66,7 +67,10 @@ const App = () => {
       setIsForecastWeatherLoading(false);
     }
 
-    setForecastWeather(prevForecast => [...prevForecast, data.list]);
+    setForecastWeather(prevForecast => {
+      prevForecast[cityId] = data.list;
+      return { ...prevForecast };
+    });
   };
 
   if (!fontLoaded) {
@@ -120,12 +124,20 @@ const App = () => {
                         <Loading />
                       ) : (
                         <View>
-                          {forecastWeather ? (
-                            forecastWeather.map((item, id) =>
-                              console.log('item: ', item)
-                            )
+                          {forecastWeather && forecastWeather[item.id] ? (
+                            <ScrollView
+                              horizontal={true}
+                              showsHorizontalScrollIndicator={false}
+                              scrollEventThrottle={16}
+                              decelerationRate="fast"
+                              pagingEnabled
+                            >
+                              {forecastWeather[item.id].map((elem, id) => (
+                                <ForecastWeather elem={elem} key={id} />
+                              ))}
+                            </ScrollView>
                           ) : (
-                            <Text>No data, sorry...</Text>
+                            <Text>No forecast data, sorry...</Text>
                           )}
                         </View>
                       )}
