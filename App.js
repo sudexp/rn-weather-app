@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, SafeAreaView, ScrollView, Text, StyleSheet } from 'react-native';
 import { useFonts } from 'expo-font';
 import { AppLoading } from 'expo';
@@ -13,6 +13,7 @@ import ForecastWeather from './components/ForecastWeather';
 import { API_KEY } from './config/api_key';
 import cities from './utils/cities';
 import colors from './utils/colors';
+import { capitalizeFirstLetter } from './utils/helpers';
 
 const App = () => {
   const [isCurrentWeatherLoading, setIsCurrentWeatherLoading] = useState(true);
@@ -21,13 +22,32 @@ const App = () => {
   );
   const [currentWeather, setCurrentWeather] = useState([]);
   const [forecastWeather, setForecastWeather] = useState({});
+
+  const [city, setCity] = useState(null);
+  const filtered = !city
+    ? currentWeather
+    : currentWeather.filter(item => {
+        return city === item.id;
+      });
+
   const [fontLoaded] = useFonts({
     ArialRegular: require('./assets/fonts/ArialRegular.ttf'),
   });
 
-  const [value, setValue] = useState('kuopio');
-
   const { helsinki, jyvaskyla, kuopio, tampere } = cities;
+
+  const defaultPicker = {
+    label: 'All cities',
+    value: null,
+  };
+
+  const items = [
+    defaultPicker,
+    ...Object.entries(cities).map(item => ({
+      label: capitalizeFirstLetter(item[0]),
+      value: item[1],
+    })),
+  ];
 
   useEffect(() => {
     fetchCurrentWeather(cities);
@@ -46,7 +66,7 @@ const App = () => {
       response = await fetch(API_URL);
       data = await response.json();
     } catch (error) {
-      console.log('errorTTT: ', error);
+      console.log('error: ', error);
     } finally {
       setIsCurrentWeatherLoading(false);
     }
@@ -91,32 +111,17 @@ const App = () => {
           ) : (
             <View>
               <DropDownPicker
-                items={[
-                  {
-                    label: 'Tampere',
-                    value: 'tampere',
-                    hidden: true,
-                  },
-                  {
-                    label: 'Kuopio',
-                    value: 'kuopio',
-                  },
-                  {
-                    label: 'Helsinki',
-                    value: 'helsinki',
-                  },
-                ]}
-                defaultValue={value}
+                items={items}
+                defaultValue={city}
                 containerStyle={styles.dropdownContainer}
                 style={styles.dropdown}
-                itemStyle={{
-                  justifyContent: 'flex-start',
-                }}
+                itemStyle={styles.dropdownItem}
                 dropDownStyle={styles.dropdown}
-                onChangeItem={item => setValue(item.value)}
+                onChangeItem={item => setCity(item.value)}
+                placeholder={defaultPicker.label}
               />
-              {currentWeather ? (
-                currentWeather.map((item, id) => {
+              {filtered ? (
+                filtered.map((item, id) => {
                   return (
                     <View key={id}>
                       <CurrentWeather item={item} />
@@ -168,6 +173,9 @@ const styles = StyleSheet.create({
   },
   dropdownContent: {
     backgroundColor: colors.backgroundSecondaryColor,
+  },
+  dropdownItem: {
+    justifyContent: 'flex-start',
   },
 });
 

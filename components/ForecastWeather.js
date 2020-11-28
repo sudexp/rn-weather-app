@@ -10,7 +10,6 @@ import { kelvinTtoCelsius, formatDate } from '../utils/helpers';
 const { width } = Dimensions.get('window');
 
 const ForecastWeather = ({ elem }) => {
-  console.log(elem);
   return (
     <Card style={styles.container}>
       <View style={styles.whiteBlock}>
