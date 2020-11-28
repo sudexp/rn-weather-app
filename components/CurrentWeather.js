@@ -56,21 +56,17 @@ const CurrentWeather = ({ item }) => {
           )}
         </View>
         <View style={styles.weatherPropsBlock}>
-          {item.wind && item.wind.speed && (
-            <CustomText style={styles.weatherProps}>
-              Wind: {item.wind.speed} m/s
-            </CustomText>
-          )}
-          {item.main && item.main.humidity && (
-            <CustomText style={styles.weatherProps}>
-              Humidity: {item.main.humidity} %
-            </CustomText>
-          )}
-          {item.rain && item.rain['3h'] && (
-            <CustomText style={styles.weatherProps}>
-              Precipitation (3h): {item.rain['3h']} mm
-            </CustomText>
-          )}
+          <CustomText style={styles.weatherProps}>
+            Wind: {item.wind && item.wind.speed ? item.wind.speed : '--'} m/s
+          </CustomText>
+          <CustomText style={styles.weatherProps}>
+            Humidity:{' '}
+            {item.main && item.main.humidity ? item.main.humidity : '--'} mm
+          </CustomText>
+          <CustomText style={styles.weatherProps}>
+            Precipitation (3h):{' '}
+            {item.rain && item.rain['3h'] ? item.rain['3h'] : '--'} mm
+          </CustomText>
         </View>
       </View>
     </Card>
@@ -110,16 +106,16 @@ const styles = StyleSheet.create({
   },
   weatherProps: {
     fontSize: 13,
-    paddingBottom: 5,
+    paddingTop: 5,
     color: colors.fontSecondaryColor,
   },
   date: {
     fontSize: 15,
     color: colors.fontPrimaryColor,
-    paddingBottom: 5,
   },
   time: {
     fontSize: 15,
+    paddingTop: 5,
     color: colors.fontSecondaryColor,
   },
   image: {

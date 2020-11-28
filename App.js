@@ -32,9 +32,9 @@ const App = () => {
   useEffect(() => {
     fetchCurrentWeather(cities);
     fetchForecastWeather(helsinki);
-    // fetchForecastWeather(jyvaskyla);
-    // fetchForecastWeather(kuopio);
-    // fetchForecastWeather(tampere);
+    fetchForecastWeather(kuopio);
+    fetchForecastWeather(tampere);
+    fetchForecastWeather(jyvaskyla);
   }, []);
 
   const fetchCurrentWeather = async cities => {
@@ -83,7 +83,7 @@ const App = () => {
         backgroundColor={colors.statusBarColor}
         barStyle="light-content"
       />
-      <Header title="Säätutka" />
+      <Header title="Weather Forecast" />
       <ScrollView>
         <SafeAreaView style={styles.container}>
           {isCurrentWeatherLoading ? (

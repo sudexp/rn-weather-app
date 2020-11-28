@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 
-// import CustomText from './CustomText';
+import CustomText from './CustomText';
 import Colors from '../utils/colors';
 
 const Header = props => {
   return (
     <View style={styles.header}>
-      <Text style={styles.title}>{props.title}</Text>
+      <CustomText style={styles.title}>{props.title}</CustomText>
     </View>
   );
 };
