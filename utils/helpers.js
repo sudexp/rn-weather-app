@@ -17,3 +17,7 @@ export const formatDate = date => {
     time: dayjs(date * 1000).format('HH:MM'),
   };
 };
+
+export const capitalizeFirstLetter = string => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};

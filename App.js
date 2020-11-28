@@ -19,9 +19,7 @@ const App = () => {
     true
   );
   const [currentWeather, setCurrentWeather] = useState([]);
-  // console.log('currentWeather: ', currentWeather);
   const [forecastWeather, setForecastWeather] = useState([]);
-  // console.log('forecastWeather: ', forecastWeather);
   const [fontLoaded] = useFonts({
     ArialRegular: require('./assets/fonts/ArialRegular.ttf'),
   });
@@ -52,7 +50,6 @@ const App = () => {
       setIsCurrentWeatherLoading(false);
     }
 
-    // console.log(data.list);
     setCurrentWeather(data.list);
   };
 
@@ -69,7 +66,6 @@ const App = () => {
       setIsForecastWeatherLoading(false);
     }
 
-    // console.log(data.list);
     setForecastWeather(prevForecast => [...prevForecast, data.list]);
   };
 
@@ -118,8 +114,8 @@ const App = () => {
               {currentWeather ? (
                 currentWeather.map((item, id) => {
                   return (
-                    <View>
-                      <CurrentWeather item={item} key={id} />
+                    <View key={id}>
+                      <CurrentWeather item={item} />
                       {isForecastWeatherLoading ? (
                         <Loading />
                       ) : (
