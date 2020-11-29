@@ -53,39 +53,39 @@ const ForecastWeather = ({ elem }) => {
 const styles = StyleSheet.create({
   container: {
     marginRight: 10,
-    width: (width - 60) / 4, // width - marginHorizontal: 15 (container style) - marginRight: 10 * 3
+    width: width < 500 ? (width - 60) / 4 : (width - 90) / 4,
     backgroundColor: colors.backgroundSecondaryColor,
     paddingHorizontal: 0,
     paddingBottom: 0,
   },
   whiteBlock: {
     alignItems: 'center',
-    paddingVertical: 5,
+    paddingVertical: width < 500 ? 5 : 10,
     borderBottomWidth: 2,
     borderColor: colors.borderColor,
   },
   blueBlock: {
     alignItems: 'center',
-    paddingTop: 10,
+    paddingTop: width < 500 ? 10 : 17,
     backgroundColor: colors.backgroundTertiaryColor,
   },
   time: {
-    fontSize: 13,
+    fontSize: width < 500 ? 13 : 21,
     paddingBottom: 10,
     color: colors.fontSecondaryColor,
   },
   image: {
-    height: 50,
+    height: width < 500 ? 50 : 100,
     width: '100%',
   },
   temperature: {
-    fontSize: 15,
+    fontSize: width < 500 ? 15 : 23,
     color: colors.fontPrimaryColor,
     paddingVertical: 10,
   },
   weatherProps: {
-    paddingBottom: 10,
-    fontSize: 10,
+    paddingBottom: width < 500 ? 10 : 12,
+    fontSize: width < 500 ? 10 : 17,
   },
 });
 

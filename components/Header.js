@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Dimensions } from 'react-native';
 
 import CustomText from './CustomText';
 import Colors from '../utils/colors';
+
+const { width } = Dimensions.get('window');
 
 const Header = props => {
   return (
@@ -15,7 +17,7 @@ const Header = props => {
 const styles = StyleSheet.create({
   header: {
     width: '100%',
-    height: 70,
+    height: width < 500 ? 70 : 100,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.backgroundSecondaryColor,
@@ -24,7 +26,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.borderColor,
   },
   title: {
-    fontSize: 23,
+    fontSize: width < 500 ? 23 : 35,
   },
 });
 

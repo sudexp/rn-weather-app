@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Dimensions } from 'react-native';
 
 import colors from '../utils/colors';
+
+const { width } = Dimensions.get('window');
 
 const Card = props => {
   return (
@@ -11,11 +13,11 @@ const Card = props => {
 
 const styles = StyleSheet.create({
   card: {
-    marginTop: 20,
+    marginTop: width < 500 ? 20 : 30,
     backgroundColor: colors.backgroundSecondaryColor,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 7,
+    paddingVertical: width < 500 ? 10 : 15,
+    paddingHorizontal: width < 500 ? 15 : 22,
+    borderRadius: width < 500 ? 7 : 10,
     borderWidth: 2,
     borderColor: colors.borderColor,
   },

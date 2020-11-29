@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, SafeAreaView, ScrollView, Text, StyleSheet } from 'react-native';
+import {
+  View,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  StyleSheet,
+  Dimensions,
+  ActivityIndicator,
+} from 'react-native';
 import { useFonts } from 'expo-font';
 import { AppLoading } from 'expo';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-import Loading from './components/Loading';
 import CustomStatusBar from './components/CustomStatusBar';
 import Header from './components/Header';
 import CurrentWeather from './components/CurrentWeather';
@@ -14,6 +21,8 @@ import { API_KEY } from './config/api_key';
 import cities from './utils/cities';
 import colors from './utils/colors';
 import { capitalizeFirstLetter } from './utils/helpers';
+
+const { height, width } = Dimensions.get('window');
 
 const App = () => {
   const [isCurrentWeatherLoading, setIsCurrentWeatherLoading] = useState(true);
@@ -104,20 +113,22 @@ const App = () => {
         barStyle="light-content"
       />
       <Header title="Weather Forecast" />
-      <ScrollView>
+      <ScrollView contentContainerStyle={styles.scroll}>
         <SafeAreaView style={styles.container}>
           {isCurrentWeatherLoading ? (
-            <Loading />
+            <ActivityIndicator size="large" color={colors.statusBarColor} />
           ) : (
             <View>
               <DropDownPicker
                 items={items}
                 defaultValue={city}
                 containerStyle={styles.dropdownContainer}
-                style={styles.dropdown}
+                style={styles.dropdownContent}
                 itemStyle={styles.dropdownItem}
                 dropDownStyle={styles.dropdown}
                 onChangeItem={item => setCity(item.value)}
+                labelStyle={styles.label}
+                activeLabelStyle={styles.active}
                 placeholder={defaultPicker.label}
               />
               {filtered ? (
@@ -126,7 +137,10 @@ const App = () => {
                     <View key={id}>
                       <CurrentWeather item={item} />
                       {isForecastWeatherLoading ? (
-                        <Loading />
+                        <ActivityIndicator
+                          size="large"
+                          color={colors.statusBarColor}
+                        />
                       ) : (
                         <View>
                           {forecastWeather && forecastWeather[item.id] ? (
@@ -142,7 +156,9 @@ const App = () => {
                               ))}
                             </ScrollView>
                           ) : (
-                            <Text>No forecast data, sorry...</Text>
+                            <View style={styles.loading}>
+                              <Text>No forecast data, sorry...</Text>
+                            </View>
                           )}
                         </View>
                       )}
@@ -150,7 +166,9 @@ const App = () => {
                   );
                 })
               ) : (
-                <Text>No data, sorry...</Text>
+                <View style={styles.loading}>
+                  <Text>No data, sorry...</Text>
+                </View>
               )}
             </View>
           )}
@@ -165,17 +183,32 @@ const styles = StyleSheet.create({
     backgroundColor: colors.backgroundPrimaryColor,
   },
   container: {
-    marginHorizontal: 15,
+    marginHorizontal: width < 500 ? 15 : 30,
   },
   dropdownContainer: {
-    marginTop: 20,
-    height: 50,
+    marginTop: width < 500 ? 20 : 40,
+    height: width < 500 ? 50 : 80,
   },
   dropdownContent: {
     backgroundColor: colors.backgroundSecondaryColor,
   },
   dropdownItem: {
     justifyContent: 'flex-start',
+  },
+  dropdown: {
+    backgroundColor: colors.backgroundSecondaryColor,
+  },
+  label: {
+    fontSize: width < 500 ? 18 : 26,
+  },
+  active: {
+    color: colors.fontSecondaryColor,
+  },
+  scroll: {
+    paddingBottom: height < 700 ? 100 : 140,
+  },
+  loading: {
+    marginTop: 30,
   },
 });
 

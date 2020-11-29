@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet, Dimensions } from 'react-native';
 
 import Card from './Card';
 import CustomText from './CustomText';
@@ -10,6 +10,8 @@ import {
   formatDate,
   capitalizeFirstLetter,
 } from '../utils/helpers';
+
+const { width } = Dimensions.get('window');
 
 const CurrentWeather = ({ item }) => {
   return (
@@ -88,11 +90,11 @@ const styles = StyleSheet.create({
   currentWeatherBlock: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 20,
+    marginVertical: width < 500 ? 20 : 30,
   },
   city: {
-    fontSize: 19,
-    paddingBottom: 5,
+    fontSize: width < 500 ? 19 : 30,
+    paddingBottom: width < 500 ? 5 : 10,
     color: colors.fontPrimaryColor,
   },
   cloudTemp: {
@@ -100,26 +102,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   temperature: {
-    fontSize: 26,
-    marginLeft: 5,
+    fontSize: width < 500 ? 26 : 38,
     color: colors.fontPrimaryColor,
   },
   weatherProps: {
-    fontSize: 13,
-    paddingTop: 5,
+    fontSize: width < 500 ? 13 : 20,
+    paddingTop: width < 500 ? 5 : 10,
     color: colors.fontSecondaryColor,
   },
   date: {
-    fontSize: 15,
+    fontSize: width < 500 ? 15 : 23,
     color: colors.fontPrimaryColor,
   },
   time: {
-    fontSize: 15,
-    paddingTop: 5,
+    fontSize: width < 500 ? 15 : 23,
+    paddingTop: width < 500 ? 5 : 10,
     color: colors.fontSecondaryColor,
   },
   image: {
-    width: 75,
+    width: width < 500 ? 80 : 140,
     height: '100%',
   },
 });
