@@ -26,24 +26,18 @@ const { height, width } = Dimensions.get('window');
 
 const App = () => {
   const [isCurrentWeatherLoading, setIsCurrentWeatherLoading] = useState(true);
-  const [isForecastWeatherLoading, setIsForecastWeatherLoading] = useState(
-    true
-  );
+  const [isForecastWeatherLoading, setIsForecastWeatherLoading] = useState(true);
   const [currentWeather, setCurrentWeather] = useState([]);
-  const [forecastWeather, setForecastWeather] = useState({});
+  const [forecastWeather, setForecastWeather] = useState([]);
 
   const [city, setCity] = useState(null);
   const filtered = !city
     ? currentWeather
-    : currentWeather.filter(item => {
-        return city === item.id;
-      });
+    : currentWeather.filter(item => city === item.id);
 
   const [fontLoaded] = useFonts({
     ArialRegular: require('./assets/fonts/ArialRegular.ttf'),
   });
-
-  const { helsinki, jyvaskyla, kuopio, tampere } = cities;
 
   const defaultPicker = {
     label: 'All cities',
@@ -59,20 +53,17 @@ const App = () => {
   ];
 
   useEffect(() => {
-    fetchCurrentWeather(cities);
-    fetchForecastWeather(helsinki);
-    fetchForecastWeather(kuopio);
-    fetchForecastWeather(tampere);
-    fetchForecastWeather(jyvaskyla);
+    fetchWeather(cities);
   }, []);
 
-  const fetchCurrentWeather = async cities => {
+  const fetchWeather = async cities => {
+    // current weather
     const id = Object.values(cities).join(',');
-    const API_URL = `http://api.openweathermap.org/data/2.5/group?id=${id}&appid=${API_KEY}`;
+    const currentWeaterURL = `http://api.openweathermap.org/data/2.5/group?id=${id}&appid=${API_KEY}`;
     let response, data;
 
     try {
-      response = await fetch(API_URL);
+      response = await fetch(currentWeaterURL);
       data = await response.json();
     } catch (error) {
       console.log('error: ', error);
@@ -81,25 +72,28 @@ const App = () => {
     }
 
     setCurrentWeather(data.list);
-  };
 
-  const fetchForecastWeather = async cityId => {
-    const API_URL = `http://api.openweathermap.org/data/2.5/forecast?id=${cityId}&appid=${API_KEY}`;
-    let response, data;
+    // forecast weather
+    const forecastWeatherRequests = Object.entries(cities)
+      .map(city => city[1])
+      .map(cityId =>
+        fetch(
+          `http://api.openweathermap.org/data/2.5/forecast?id=${cityId}&appid=${API_KEY}`
+        )
+      );
 
-    try {
-      response = await fetch(API_URL);
-      data = await response.json();
-    } catch (error) {
-      console.log('error: ', error);
-    } finally {
-      setIsForecastWeatherLoading(false);
-    }
+    const forecastList = await Promise.all(forecastWeatherRequests)
+      .then(responses => Promise.all(responses.map(response => response.json())))
+      .then(forecasts =>
+        forecasts.map(forecast => ({
+          id: forecast.city.id,
+          data: forecast.list,
+        }))
+      )
+      .catch(error => console.log(error))
+      .then(setIsForecastWeatherLoading(false));
 
-    setForecastWeather(prevForecast => {
-      prevForecast[cityId] = data.list;
-      return { ...prevForecast };
-    });
+    setForecastWeather(forecastList);
   };
 
   if (!fontLoaded) {
@@ -132,9 +126,9 @@ const App = () => {
                 placeholder={defaultPicker.label}
               />
               {filtered ? (
-                filtered.map((item, id) => {
+                filtered.map((item, index) => {
                   return (
-                    <View key={id}>
+                    <View key={index}>
                       <CurrentWeather item={item} />
                       {isForecastWeatherLoading ? (
                         <ActivityIndicator
@@ -143,7 +137,7 @@ const App = () => {
                         />
                       ) : (
                         <View>
-                          {forecastWeather && forecastWeather[item.id] ? (
+                          {forecastWeather.length ? (
                             <ScrollView
                               horizontal={true}
                               showsHorizontalScrollIndicator={false}
@@ -151,9 +145,14 @@ const App = () => {
                               decelerationRate="fast"
                               pagingEnabled
                             >
-                              {forecastWeather[item.id].map((elem, id) => (
-                                <ForecastWeather elem={elem} key={id} />
-                              ))}
+                              {forecastWeather
+                                .filter(forecast => forecast.id === item.id)[0]
+                                .data.map((filteredForecast, index) => (
+                                  <ForecastWeather
+                                    elem={filteredForecast}
+                                    key={index}
+                                  />
+                                ))}
                             </ScrollView>
                           ) : (
                             <View style={styles.loading}>
