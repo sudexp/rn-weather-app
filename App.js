@@ -43,8 +43,6 @@ const App = () => {
     ArialRegular: require('./assets/fonts/ArialRegular.ttf'),
   });
 
-  const { helsinki, jyvaskyla, kuopio, tampere } = cities;
-
   const defaultPicker = {
     label: 'All cities',
     value: null,
@@ -60,10 +58,8 @@ const App = () => {
 
   useEffect(() => {
     fetchCurrentWeather(cities);
-    fetchForecastWeather(helsinki);
-    fetchForecastWeather(kuopio);
-    fetchForecastWeather(tampere);
-    fetchForecastWeather(jyvaskyla);
+    Object.values(cities).map(fetchForecastWeather);
+    // Object.values(cities).map(cityId => fetchForecastWeather(cityId))
   }, []);
 
   const fetchCurrentWeather = async cities => {
